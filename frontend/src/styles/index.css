@@ -1,0 +1,384 @@
+/* ============================================
+   VideoMind AI — Design System
+   Dala-inspired Cosmic Void Theme
+   ============================================ */
+
+/* Google Fonts — Inter (Acronym substitute) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap');
+
+/* ============================================
+   Design Tokens
+   ============================================ */
+:root {
+  /* Colors */
+  --color-void: #000000;
+  --color-bone: #ffffff;
+  --color-ash: #bdbdbd;
+  --color-smoke: #9a9a9a;
+  --color-plum-voltage: #8052ff;
+  --color-plum-voltage-hover: #6b3de6;
+  --color-plum-voltage-glow: rgba(128, 82, 255, 0.15);
+  --color-plum-voltage-muted: rgba(128, 82, 255, 0.08);
+  --color-amber-spark: #ffb829;
+  --color-lichen: #15846e;
+  --color-error: #ff4d6a;
+  --color-success: #15846e;
+
+  /* Surfaces */
+  --surface-void: #000000;
+  --surface-card: rgba(255, 255, 255, 0.03);
+  --surface-card-hover: rgba(255, 255, 255, 0.06);
+  --surface-input: rgba(255, 255, 255, 0.05);
+  --surface-overlay: rgba(0, 0, 0, 0.85);
+
+  /* Borders */
+  --border-hairline: rgba(255, 255, 255, 0.08);
+  --border-hairline-hover: rgba(255, 255, 255, 0.15);
+  --border-accent: rgba(128, 82, 255, 0.3);
+
+  /* Typography — Font */
+  --font-primary: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* Typography — Weights */
+  --fw-extralight: 200;
+  --fw-light: 300;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  /* Typography — Scale */
+  --text-caption: 12px;
+  --leading-caption: 1.5;
+  --tracking-caption: 0.05em;
+
+  --text-body-sm: 14px;
+  --leading-body-sm: 1.5;
+  --tracking-body-sm: 0.05em;
+
+  --text-body: 15px;
+  --leading-body: 1.6;
+  --tracking-body: 0.025em;
+
+  --text-subheading: 18px;
+  --leading-subheading: 1.5;
+  --tracking-subheading: 0.025em;
+
+  --text-heading-sm: 24px;
+  --leading-heading-sm: 1.3;
+  --tracking-heading-sm: 0.021em;
+
+  --text-heading: 36px;
+  --leading-heading: 1.2;
+  --tracking-heading: 0.021em;
+
+  --text-heading-lg: 48px;
+  --leading-heading-lg: 1.1;
+  --tracking-heading-lg: -0.04em;
+
+  --text-display: 78px;
+  --leading-display: 0.9;
+  --tracking-display: -0.04em;
+
+  --text-hero: 113px;
+  --leading-hero: 0.81;
+  --tracking-hero: -0.04em;
+
+  /* Spacing (base unit: 6px) */
+  --spacing-4: 4px;
+  --spacing-6: 6px;
+  --spacing-8: 8px;
+  --spacing-12: 12px;
+  --spacing-16: 16px;
+  --spacing-18: 18px;
+  --spacing-24: 24px;
+  --spacing-30: 30px;
+  --spacing-36: 36px;
+  --spacing-48: 48px;
+  --spacing-60: 60px;
+  --spacing-96: 96px;
+  --spacing-120: 120px;
+
+  /* Layout */
+  --page-max-width: 1200px;
+  --section-gap: 60px;
+  --card-padding: 24px;
+  --element-gap: 15px;
+
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 24px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --transition-fast: 150ms var(--ease-out-expo);
+  --transition-normal: 300ms var(--ease-out-expo);
+  --transition-slow: 500ms var(--ease-out-expo);
+
+  /* Z-Index Scale */
+  --z-base: 0;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-overlay: 300;
+  --z-modal: 400;
+  --z-toast: 500;
+  --z-particles: -1;
+}
+
+/* ============================================
+   Global Reset
+   ============================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-primary);
+  font-size: var(--text-body);
+  font-weight: var(--fw-regular);
+  line-height: var(--leading-body);
+  letter-spacing: var(--tracking-body);
+  color: var(--color-bone);
+  background-color: var(--color-void);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+input, textarea, select {
+  font-family: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  outline: none;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+img, video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ============================================
+   Typography Classes
+   ============================================ */
+.text-hero {
+  font-size: var(--text-hero);
+  font-weight: var(--fw-extralight);
+  line-height: var(--leading-hero);
+  letter-spacing: var(--tracking-hero);
+  color: var(--color-bone);
+}
+
+.text-display {
+  font-size: var(--text-display);
+  font-weight: var(--fw-extralight);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+  color: var(--color-bone);
+}
+
+.text-heading-lg {
+  font-size: var(--text-heading-lg);
+  font-weight: var(--fw-extralight);
+  line-height: var(--leading-heading-lg);
+  letter-spacing: var(--tracking-heading-lg);
+  color: var(--color-bone);
+}
+
+.text-heading {
+  font-size: var(--text-heading);
+  font-weight: var(--fw-light);
+  line-height: var(--leading-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--color-bone);
+}
+
+.text-heading-sm {
+  font-size: var(--text-heading-sm);
+  font-weight: var(--fw-regular);
+  line-height: var(--leading-heading-sm);
+  letter-spacing: var(--tracking-heading-sm);
+  color: var(--color-bone);
+}
+
+.text-subheading {
+  font-size: var(--text-subheading);
+  font-weight: var(--fw-regular);
+  line-height: var(--leading-subheading);
+  letter-spacing: var(--tracking-subheading);
+  color: var(--color-bone);
+}
+
+.text-body {
+  font-size: var(--text-body);
+  font-weight: var(--fw-regular);
+  line-height: var(--leading-body);
+  letter-spacing: var(--tracking-body);
+  color: var(--color-ash);
+}
+
+.text-body-sm {
+  font-size: var(--text-body-sm);
+  font-weight: var(--fw-regular);
+  line-height: var(--leading-body-sm);
+  letter-spacing: var(--tracking-body-sm);
+  color: var(--color-ash);
+}
+
+.text-caption {
+  font-size: var(--text-caption);
+  font-weight: var(--fw-regular);
+  line-height: var(--leading-caption);
+  letter-spacing: var(--tracking-caption);
+  color: var(--color-smoke);
+}
+
+.text-eyebrow {
+  font-size: var(--text-caption);
+  font-weight: var(--fw-semibold);
+  line-height: var(--leading-caption);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-plum-voltage);
+}
+
+/* ============================================
+   Scrollbar
+   ============================================ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ============================================
+   Selection
+   ============================================ */
+::selection {
+  background: var(--color-plum-voltage);
+  color: var(--color-bone);
+}
+
+/* ============================================
+   Utility Classes
+   ============================================ */
+.container {
+  width: 100%;
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  padding: 0 var(--spacing-24);
+}
+
+.section {
+  padding: var(--spacing-120) 0;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ============================================
+   Responsive Typography
+   ============================================ */
+@media (max-width: 1024px) {
+  .text-hero {
+    font-size: 72px;
+    line-height: 0.9;
+  }
+  .text-display {
+    font-size: 56px;
+    line-height: 0.95;
+  }
+}
+
+@media (max-width: 768px) {
+  .text-hero {
+    font-size: 48px;
+    line-height: 1.0;
+  }
+  .text-display {
+    font-size: 40px;
+    line-height: 1.0;
+  }
+  .text-heading-lg {
+    font-size: 36px;
+  }
+  .text-heading {
+    font-size: 28px;
+  }
+  .container {
+    padding: 0 var(--spacing-16);
+  }
+  .section {
+    padding: var(--spacing-60) 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .text-hero {
+    font-size: 36px;
+    line-height: 1.05;
+  }
+  .text-display {
+    font-size: 32px;
+    line-height: 1.05;
+  }
+}
