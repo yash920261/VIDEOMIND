@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { Mail } from 'lucide-react';
 
 const GithubIcon = ({ size = 18 }) => (
@@ -8,30 +9,63 @@ const TwitterIcon = ({ size = 18 }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4l11.733 16h4.267l-11.733 -16z"/><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"/></svg>
 );
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.06, delayChildren: 0.1 },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
 export default function Footer() {
   return (
-    <footer className="footer">
+    <motion.footer
+      className="footer"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: '-40px' }}
+      variants={containerVariants}
+    >
       <div className="footer-inner">
-        <div className="footer-left">
+        <motion.div className="footer-left" variants={itemVariants}>
           © {new Date().getFullYear()} VideoMind AI. All rights reserved.
-        </div>
-        <div className="footer-links">
+        </motion.div>
+        <motion.div className="footer-links" variants={itemVariants}>
           <a href="#features" className="footer-link">Features</a>
           <a href="#how-it-works" className="footer-link">How It Works</a>
           <a href="mailto:contact@videomind.ai" className="footer-link">Contact</a>
-        </div>
-        <div className="footer-socials">
-          <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="footer-social" aria-label="GitHub">
-            <GithubIcon size={18} />
-          </a>
-          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="footer-social" aria-label="Twitter">
-            <TwitterIcon size={18} />
-          </a>
-          <a href="mailto:contact@videomind.ai" className="footer-social" aria-label="Email">
-            <Mail size={18} />
-          </a>
-        </div>
+        </motion.div>
+        <motion.div className="footer-socials" variants={containerVariants}>
+          {[
+            { href: 'https://github.com', icon: GithubIcon, label: 'GitHub' },
+            { href: 'https://twitter.com', icon: TwitterIcon, label: 'Twitter' },
+            { href: 'mailto:contact@videomind.ai', icon: Mail, label: 'Email' },
+          ].map((social, idx) => (
+            <motion.a
+              key={idx}
+              href={social.href}
+              target={social.href.startsWith('mailto') ? undefined : '_blank'}
+              rel={social.href.startsWith('mailto') ? undefined : 'noopener noreferrer'}
+              className="footer-social"
+              aria-label={social.label}
+              variants={itemVariants}
+              whileHover={{ color: '#8052ff' }}
+              transition={{ duration: 0.2 }}
+            >
+              <social.icon size={18} />
+            </motion.a>
+          ))}
+        </motion.div>
       </div>
-    </footer>
+    </motion.footer>
   );
 }

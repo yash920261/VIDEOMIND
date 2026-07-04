@@ -3,23 +3,24 @@
    ============================================ */
 
 /* ============================================
-   Navbar
+   Navbar — Floating pill on the void
    ============================================ */
 .navbar {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 12px;
+  left: 24px;
+  right: 24px;
   z-index: var(--z-sticky);
-  padding: var(--spacing-18) 0;
+  padding: 0;
   transition: all var(--transition-normal);
+  border-radius: var(--radius-pill);
 }
 
 .navbar.scrolled {
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border-hairline);
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-hairline);
 }
 
 .navbar-inner {
@@ -28,7 +29,7 @@
   justify-content: space-between;
   max-width: var(--page-max-width);
   margin: 0 auto;
-  padding: 0 var(--spacing-24);
+  padding: var(--spacing-16) var(--spacing-24);
 }
 
 .navbar-logo {
@@ -40,6 +41,11 @@
   color: var(--color-bone);
   text-decoration: none;
   letter-spacing: 0.02em;
+  transition: opacity var(--transition-fast);
+}
+
+.navbar-logo:hover {
+  opacity: 0.85;
 }
 
 .navbar-logo-icon {
@@ -90,37 +96,55 @@
   align-items: center;
   justify-content: center;
   color: var(--color-bone);
+  border-radius: var(--radius-pill);
+  transition: background var(--transition-fast);
+}
+
+.navbar-mobile-toggle:hover {
+  background: var(--surface-card);
 }
 
 @media (max-width: 768px) {
+  .navbar {
+    top: 8px;
+    left: 12px;
+    right: 12px;
+  }
+
   .navbar-links {
     display: none;
   }
+
   .navbar-mobile-toggle {
     display: flex;
   }
+
   .navbar-links.open {
     display: flex;
     flex-direction: column;
     position: absolute;
-    top: 100%;
+    top: calc(100% + 8px);
     left: 0;
     right: 0;
     background: rgba(0, 0, 0, 0.95);
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
     padding: var(--spacing-24);
-    border-bottom: 1px solid var(--border-hairline);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-pill);
     gap: var(--spacing-18);
   }
 }
 
 /* ============================================
-   Footer
+   Footer — Hairline border on the void
    ============================================ */
 .footer {
   border-top: 1px solid var(--border-hairline);
   padding: var(--spacing-48) 0;
   margin-top: auto;
+  position: relative;
+  z-index: 2;
 }
 
 .footer-inner {
@@ -137,6 +161,7 @@
 .footer-left {
   font-size: var(--text-caption);
   color: var(--color-smoke);
+  letter-spacing: var(--tracking-caption);
 }
 
 .footer-links {
@@ -167,10 +192,21 @@
 .footer-social {
   color: var(--color-smoke);
   transition: color var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .footer-social:hover {
-  color: var(--color-bone);
+  color: var(--color-plum-voltage);
+}
+
+@media (max-width: 768px) {
+  .footer-inner {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--spacing-18);
+  }
 }
 
 /* ============================================
@@ -180,18 +216,20 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  padding-top: 72px; /* navbar height */
+  padding-top: 80px; /* navbar height + floating offset */
 }
 
 .page-content {
   flex: 1;
+  position: relative;
+  z-index: 1;
 }
 
 /* Split Pane (VideoChat page) */
 .split-pane {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  height: calc(100vh - 72px);
+  height: calc(100vh - 80px);
   overflow: hidden;
 }
 

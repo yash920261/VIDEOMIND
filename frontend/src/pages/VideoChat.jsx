@@ -22,16 +22,18 @@ function TimestampLink({ startTime, endTime, videoId }) {
   const ytUrl = `https://youtube.com/watch?v=${videoId}&t=${Math.floor(startTime)}`;
 
   return (
-    <a
+    <motion.a
       href={ytUrl}
       target="_blank"
       rel="noopener noreferrer"
       className="timestamp-link"
+      whileHover={{ backgroundColor: 'rgba(128, 82, 255, 0.2)' }}
+      transition={{ duration: 0.2 }}
     >
       <Clock size={11} />
       {timeStr}
       <ExternalLink size={10} />
-    </a>
+    </motion.a>
   );
 }
 
@@ -48,9 +50,9 @@ function ChatMessage({ message, videoYtId }) {
     return (
       <motion.div
         className="chat-message chat-message-user"
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        initial={{ opacity: 0, x: 20, scale: 0.95 }}
+        animate={{ opacity: 1, x: 0, scale: 1 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       >
         <div className="chat-message-avatar">Y</div>
         <div className="chat-message-content">{message.question}</div>
@@ -61,9 +63,9 @@ function ChatMessage({ message, videoYtId }) {
   return (
     <motion.div
       className="chat-message chat-message-ai"
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      initial={{ opacity: 0, x: -20, scale: 0.95 }}
+      animate={{ opacity: 1, x: 0, scale: 1 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.05 }}
     >
       <div className="chat-message-avatar">AI</div>
       <div className="chat-message-content">
@@ -85,13 +87,15 @@ function ChatMessage({ message, videoYtId }) {
         )}
 
         <div style={{ marginTop: '8px', display: 'flex', justifyContent: 'flex-end' }}>
-          <button
+          <motion.button
             className="btn btn-ghost btn-sm"
             onClick={handleCopy}
             style={{ fontSize: '11px', padding: '4px 8px' }}
+            whileHover={{ color: '#ffffff' }}
+            transition={{ duration: 0.2 }}
           >
             {copied ? <Check size={12} /> : <Copy size={12} />}
-          </button>
+          </motion.button>
         </div>
       </div>
     </motion.div>
@@ -242,6 +246,12 @@ export default function VideoChat() {
     { id: 'quiz', label: 'Quiz', icon: BrainCircuit },
   ];
 
+  const tabContentVariants = {
+    initial: { opacity: 0, y: 8 },
+    animate: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] } },
+    exit: { opacity: 0, y: -8, transition: { duration: 0.2 } },
+  };
+
   return (
     <div className="split-pane">
       {/* Left: Video Player */}
@@ -258,15 +268,30 @@ export default function VideoChat() {
           <h2 className="video-meta-title">{video.title}</h2>
           <p className="video-meta-channel">{video.channel} • {video.duration}</p>
           <div className="video-meta-actions">
-            <button className="btn btn-secondary btn-sm" onClick={() => handleTabChange('summary')}>
+            <motion.button
+              className="btn btn-secondary btn-sm"
+              onClick={() => handleTabChange('summary')}
+              whileHover={{ borderColor: 'rgba(255,255,255,0.2)' }}
+              transition={{ duration: 0.2 }}
+            >
               <FileText size={14} /> Summary
-            </button>
-            <button className="btn btn-secondary btn-sm" onClick={() => handleTabChange('notes')}>
+            </motion.button>
+            <motion.button
+              className="btn btn-secondary btn-sm"
+              onClick={() => handleTabChange('notes')}
+              whileHover={{ borderColor: 'rgba(255,255,255,0.2)' }}
+              transition={{ duration: 0.2 }}
+            >
               <BookOpen size={14} /> Notes
-            </button>
-            <button className="btn btn-secondary btn-sm" onClick={() => handleTabChange('quiz')}>
+            </motion.button>
+            <motion.button
+              className="btn btn-secondary btn-sm"
+              onClick={() => handleTabChange('quiz')}
+              whileHover={{ borderColor: 'rgba(255,255,255,0.2)' }}
+              transition={{ duration: 0.2 }}
+            >
               <BrainCircuit size={14} /> Quiz
-            </button>
+            </motion.button>
           </div>
         </div>
       </div>
@@ -276,14 +301,16 @@ export default function VideoChat() {
         {/* Tab Bar */}
         <div className="chat-tabs">
           {tabs.map(tab => (
-            <button
+            <motion.button
               key={tab.id}
               className={`chat-tab ${activeTab === tab.id ? 'active' : ''}`}
               onClick={() => handleTabChange(tab.id)}
+              whileHover={{ color: '#ffffff' }}
+              transition={{ duration: 0.15 }}
             >
               <tab.icon size={14} style={{ marginRight: '6px', verticalAlign: 'middle' }} />
               {tab.label}
-            </button>
+            </motion.button>
           ))}
         </div>
 
@@ -293,35 +320,51 @@ export default function VideoChat() {
             <motion.div
               key="chat"
               className="chat-window"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              variants={tabContentVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
               style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
             >
               <div className="chat-messages">
                 {messages.length === 0 && (
-                  <div className="empty-state" style={{ padding: 'var(--spacing-48)' }}>
-                    <div className="empty-state-icon">
+                  <motion.div
+                    className="empty-state"
+                    style={{ padding: 'var(--spacing-48)' }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                  >
+                    <motion.div
+                      className="empty-state-icon"
+                      animate={{ scale: [1, 1.05, 1] }}
+                      transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+                    >
                       <MessageSquare size={28} />
-                    </div>
+                    </motion.div>
                     <h3 className="empty-state-title">Ask anything about this video</h3>
                     <p className="empty-state-text">
                       I've analyzed the transcript and can answer questions with timestamp references.
                     </p>
-                  </div>
+                  </motion.div>
                 )}
                 {messages.map((msg, idx) => (
                   <ChatMessage key={idx} message={msg} videoYtId={video.videoId} />
                 ))}
                 {asking && (
-                  <div className="chat-message chat-message-ai">
+                  <motion.div
+                    className="chat-message chat-message-ai"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                  >
                     <div className="chat-message-avatar">AI</div>
                     <div className="chat-message-content">
                       <div className="pulse-loader">
                         <span /><span /><span />
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 )}
                 <div ref={messagesEndRef} />
               </div>
@@ -335,14 +378,16 @@ export default function VideoChat() {
                     onChange={(e) => setQuestion(e.target.value)}
                     disabled={asking}
                   />
-                  <button
+                  <motion.button
                     type="submit"
                     className="chat-send-btn"
                     disabled={asking || !question.trim()}
                     aria-label="Send question"
+                    whileHover={!asking && question.trim() ? { backgroundColor: '#6b3de6' } : {}}
+                    transition={{ duration: 0.2 }}
                   >
                     {asking ? <Loader2 size={18} className="spin-animation" /> : <Send size={18} />}
-                  </button>
+                  </motion.button>
                 </div>
               </form>
             </motion.div>
@@ -351,9 +396,10 @@ export default function VideoChat() {
           {activeTab === 'summary' && (
             <motion.div
               key="summary"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              variants={tabContentVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
               style={{ flex: 1, overflow: 'auto', padding: 'var(--spacing-24)' }}
             >
               {tabLoading ? (
@@ -366,12 +412,17 @@ export default function VideoChat() {
                 <div className="notes-content">
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-24)' }}>
                     <h2 className="text-heading-sm">Video Summary</h2>
-                    <button className="btn btn-secondary btn-sm" onClick={() => handleDownload(
-                      `# Summary: ${video.title}\n\n## Short\n${summary.short}\n\n## Detailed\n${summary.detailed}\n\n## Key Points\n${summary.bullets?.map(b => `- ${b}`).join('\n')}`,
-                      `${video.title}-summary.md`
-                    )}>
+                    <motion.button
+                      className="btn btn-secondary btn-sm"
+                      onClick={() => handleDownload(
+                        `# Summary: ${video.title}\n\n## Short\n${summary.short}\n\n## Detailed\n${summary.detailed}\n\n## Key Points\n${summary.bullets?.map(b => `- ${b}`).join('\n')}`,
+                        `${video.title}-summary.md`
+                      )}
+                      whileHover={{ borderColor: 'rgba(255,255,255,0.2)' }}
+                      transition={{ duration: 0.2 }}
+                    >
                       <Download size={14} /> Download
-                    </button>
+                    </motion.button>
                   </div>
 
                   <h3>Short Summary</h3>
@@ -391,9 +442,15 @@ export default function VideoChat() {
                 </div>
               ) : (
                 <div className="empty-state">
-                  <button className="btn btn-primary" onClick={() => handleTabChange('summary')}>
+                  <motion.button
+                    className="btn btn-primary"
+                    onClick={() => handleTabChange('summary')}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+                  >
                     <FileText size={14} /> Generate Summary
-                  </button>
+                  </motion.button>
                 </div>
               )}
             </motion.div>
@@ -402,9 +459,10 @@ export default function VideoChat() {
           {activeTab === 'notes' && (
             <motion.div
               key="notes"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              variants={tabContentVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
               style={{ flex: 1, overflow: 'auto', padding: 'var(--spacing-24)' }}
             >
               {tabLoading ? (
@@ -413,9 +471,14 @@ export default function VideoChat() {
                 <div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-24)' }}>
                     <h2 className="text-heading-sm">Study Notes</h2>
-                    <button className="btn btn-secondary btn-sm" onClick={() => handleDownload(notes, `${video.title}-notes.md`)}>
+                    <motion.button
+                      className="btn btn-secondary btn-sm"
+                      onClick={() => handleDownload(notes, `${video.title}-notes.md`)}
+                      whileHover={{ borderColor: 'rgba(255,255,255,0.2)' }}
+                      transition={{ duration: 0.2 }}
+                    >
                       <Download size={14} /> Download
-                    </button>
+                    </motion.button>
                   </div>
                   <div className="notes-content" style={{ padding: 0 }}>
                     <ReactMarkdown>{notes}</ReactMarkdown>
@@ -423,9 +486,15 @@ export default function VideoChat() {
                 </div>
               ) : (
                 <div className="empty-state">
-                  <button className="btn btn-primary" onClick={() => handleTabChange('notes')}>
+                  <motion.button
+                    className="btn btn-primary"
+                    onClick={() => handleTabChange('notes')}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+                  >
                     <BookOpen size={14} /> Generate Notes
-                  </button>
+                  </motion.button>
                 </div>
               )}
             </motion.div>
@@ -434,9 +503,10 @@ export default function VideoChat() {
           {activeTab === 'quiz' && (
             <motion.div
               key="quiz"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              variants={tabContentVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
               style={{ flex: 1, overflow: 'auto', padding: 'var(--spacing-24)' }}
             >
               {tabLoading ? (
@@ -445,9 +515,15 @@ export default function VideoChat() {
                 <QuizView quiz={quiz} videoTitle={video.title} />
               ) : (
                 <div className="empty-state">
-                  <button className="btn btn-primary" onClick={() => handleTabChange('quiz')}>
+                  <motion.button
+                    className="btn btn-primary"
+                    onClick={() => handleTabChange('quiz')}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+                  >
                     <BrainCircuit size={14} /> Generate Quiz
-                  </button>
+                  </motion.button>
                 </div>
               )}
             </motion.div>
@@ -484,9 +560,9 @@ function QuizView({ quiz, videoTitle }) {
       <div className="quiz-container" style={{ padding: 0 }}>
         <motion.div
           className="score-display"
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 0, scale: 0.85 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ type: 'spring', stiffness: 300, damping: 20 }}
         >
           <div className="score-circle" style={{
             borderColor: score / quiz.length >= 0.7 ? 'var(--color-success)' : score / quiz.length >= 0.4 ? 'var(--color-amber-spark)' : 'var(--color-error)'
@@ -500,19 +576,29 @@ function QuizView({ quiz, videoTitle }) {
           <p className="text-body-sm" style={{ color: 'var(--color-smoke)' }}>
             You got {score} out of {quiz.length} questions correct
           </p>
-          <button
+          <motion.button
             className="btn btn-primary"
             style={{ marginTop: 'var(--spacing-24)' }}
             onClick={() => { setCurrentQ(0); setAnswers({}); setShowResults(false); }}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 17 }}
           >
             <RefreshCw size={14} /> Try Again
-          </button>
+          </motion.button>
         </motion.div>
 
         {/* Show all questions with correct answers */}
         <div style={{ marginTop: 'var(--spacing-36)' }}>
           {quiz.map((question, qIdx) => (
-            <div key={qIdx} className="quiz-card" style={{ marginBottom: 'var(--spacing-18)' }}>
+            <motion.div
+              key={qIdx}
+              className="quiz-card"
+              style={{ marginBottom: 'var(--spacing-18)' }}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: qIdx * 0.08, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            >
               <p className="quiz-question">
                 <span className="quiz-question-number">Q{qIdx + 1}. </span>
                 {question.question}
@@ -533,7 +619,7 @@ function QuizView({ quiz, videoTitle }) {
                   </div>
                 ))}
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
@@ -544,7 +630,12 @@ function QuizView({ quiz, videoTitle }) {
     <div className="quiz-container" style={{ padding: 0 }}>
       <div className="quiz-progress">
         <div className="quiz-progress-bar">
-          <div className="quiz-progress-fill" style={{ width: `${progress}%` }} />
+          <motion.div
+            className="quiz-progress-fill"
+            initial={{ width: 0 }}
+            animate={{ width: `${progress}%` }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          />
         </div>
         <span className="quiz-progress-text">{currentQ + 1} / {quiz.length}</span>
       </div>
@@ -564,16 +655,21 @@ function QuizView({ quiz, videoTitle }) {
           </p>
           <div className="quiz-options">
             {q.options.map((opt, idx) => (
-              <button
+              <motion.button
                 key={idx}
                 className={`quiz-option ${answers[currentQ] === idx ? 'selected' : ''}`}
                 onClick={() => handleSelect(idx)}
+                whileHover={{
+                  borderColor: 'rgba(255,255,255,0.15)',
+                  backgroundColor: 'rgba(255,255,255,0.03)',
+                }}
+                transition={{ duration: 0.2 }}
               >
                 <span className="quiz-option-letter">
                   {String.fromCharCode(65 + idx)}
                 </span>
                 {opt}
-              </button>
+              </motion.button>
             ))}
           </div>
         </motion.div>
@@ -588,21 +684,27 @@ function QuizView({ quiz, videoTitle }) {
           Previous
         </button>
         {currentQ < quiz.length - 1 ? (
-          <button
+          <motion.button
             className="btn btn-primary"
             disabled={answers[currentQ] === undefined}
             onClick={() => setCurrentQ(prev => prev + 1)}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 17 }}
           >
             Next
-          </button>
+          </motion.button>
         ) : (
-          <button
+          <motion.button
             className="btn btn-primary"
             disabled={Object.keys(answers).length < quiz.length}
             onClick={handleSubmit}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 17 }}
           >
             Submit Quiz
-          </button>
+          </motion.button>
         )}
       </div>
     </div>

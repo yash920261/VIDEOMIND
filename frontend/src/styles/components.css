@@ -1,9 +1,11 @@
 /* ============================================
    Component Styles
+   No shadows, no glows, no elevation.
+   Depth comes from the void and color contrast.
    ============================================ */
 
 /* ============================================
-   Buttons
+   Buttons — Pill shape, 24px radius
    ============================================ */
 .btn {
   display: inline-flex;
@@ -24,6 +26,7 @@
   overflow: hidden;
 }
 
+/* Primary — Plum Voltage fill, the only filled chromatic surface */
 .btn-primary {
   background: var(--color-plum-voltage);
   color: var(--color-bone);
@@ -32,13 +35,18 @@
 
 .btn-primary:hover {
   background: var(--color-plum-voltage-hover);
-  transform: translateY(-1px);
 }
 
 .btn-primary:active {
-  transform: translateY(0);
+  opacity: 0.9;
 }
 
+.btn-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Secondary — Ghost with hairline border */
 .btn-secondary {
   background: transparent;
   color: var(--color-bone);
@@ -50,6 +58,7 @@
   background: var(--surface-card);
 }
 
+/* Ghost — No border, color shift only */
 .btn-ghost {
   background: transparent;
   color: var(--color-smoke);
@@ -60,6 +69,7 @@
   color: var(--color-bone);
 }
 
+/* Icon button */
 .btn-icon {
   width: 40px;
   height: 40px;
@@ -68,8 +78,14 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  transition: color var(--transition-fast), background var(--transition-fast);
 }
 
+.btn-icon:hover {
+  background: var(--surface-card);
+}
+
+/* Sizes */
 .btn-lg {
   padding: 16px 32px;
   font-size: var(--text-body-sm);
@@ -81,7 +97,7 @@
 }
 
 /* ============================================
-   Inputs
+   Inputs — Pill shape
    ============================================ */
 .input-wrapper {
   position: relative;
@@ -98,7 +114,7 @@
   background: var(--surface-input);
   border: 1px solid var(--border-hairline);
   border-radius: var(--radius-pill);
-  transition: all var(--transition-normal);
+  transition: border-color var(--transition-normal), background var(--transition-normal);
 }
 
 .input::placeholder {
@@ -108,7 +124,6 @@
 .input:focus {
   border-color: var(--color-plum-voltage);
   background: rgba(128, 82, 255, 0.05);
-  box-shadow: 0 0 0 3px var(--color-plum-voltage-glow);
 }
 
 .input-lg {
@@ -128,14 +143,15 @@
 }
 
 /* ============================================
-   Cards
+   Cards — Hairline border on the void
    ============================================ */
 .card {
   background: var(--surface-card);
   border: 1px solid var(--border-hairline);
   border-radius: var(--radius-pill);
   padding: var(--card-padding);
-  transition: all var(--transition-normal);
+  transition: border-color var(--transition-normal), background var(--transition-normal);
+  cursor: pointer;
 }
 
 .card:hover {
@@ -214,10 +230,6 @@
   border-width: 3px;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
 /* Pulse loader */
 .pulse-loader {
   display: flex;
@@ -271,7 +283,7 @@
   border: none;
   border-bottom: 2px solid transparent;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: color var(--transition-fast), border-color var(--transition-fast);
 }
 
 .tab:hover {
@@ -332,20 +344,20 @@
 }
 
 /* ============================================
-   Video Card
+   Video Card — No elevation on hover
    ============================================ */
 .video-card {
   background: var(--surface-card);
   border: 1px solid var(--border-hairline);
   border-radius: var(--radius-pill);
   overflow: hidden;
-  transition: all var(--transition-normal);
+  transition: border-color var(--transition-normal), background var(--transition-normal);
   cursor: pointer;
 }
 
 .video-card:hover {
   border-color: var(--border-hairline-hover);
-  transform: translateY(-2px);
+  background: var(--surface-card-hover);
 }
 
 .video-card-thumbnail {
@@ -496,12 +508,11 @@
   border-radius: var(--radius-pill);
   color: var(--color-bone);
   font-size: var(--text-body-sm);
-  transition: all var(--transition-normal);
+  transition: border-color var(--transition-normal);
 }
 
 .chat-input:focus {
   border-color: var(--color-plum-voltage);
-  box-shadow: 0 0 0 3px var(--color-plum-voltage-glow);
 }
 
 .chat-send-btn {
@@ -513,19 +524,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all var(--transition-fast);
+  transition: background var(--transition-fast);
   flex-shrink: 0;
 }
 
 .chat-send-btn:hover {
   background: var(--color-plum-voltage-hover);
-  transform: scale(1.05);
 }
 
 .chat-send-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
-  transform: none;
 }
 
 /* Timestamp links */
@@ -536,12 +545,13 @@
   padding: 2px 8px;
   background: var(--color-plum-voltage-muted);
   color: var(--color-plum-voltage);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-pill);
   font-size: 12px;
   font-weight: var(--fw-semibold);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: background var(--transition-fast);
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .timestamp-link:hover {
@@ -626,7 +636,7 @@
   border: 1px solid var(--border-hairline);
   border-radius: var(--radius-pill);
   padding: var(--spacing-30);
-  transition: all var(--transition-normal);
+  transition: border-color var(--transition-normal);
 }
 
 .quiz-question {
@@ -656,7 +666,7 @@
   border: 1px solid var(--border-hairline);
   border-radius: var(--radius-pill);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: border-color var(--transition-fast), background var(--transition-fast);
   font-size: var(--text-body-sm);
   color: var(--color-ash);
   text-align: left;

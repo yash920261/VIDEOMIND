@@ -89,33 +89,33 @@ class Particle {
     this.opacity = 0.1 + Math.random() * 0.7;
     this.baseOpacity = this.opacity;
     this.rotation = Math.random() * Math.PI * 2;
-    this.rotationSpeed = (Math.random() - 0.5) * 0.02;
-    this.vx = (Math.random() - 0.5) * 0.3;
-    this.vy = (Math.random() - 0.5) * 0.15;
+    this.rotationSpeed = (Math.random() - 0.5) * 0.015;
+    this.vx = (Math.random() - 0.5) * 0.25;
+    this.vy = (Math.random() - 0.5) * 0.12;
     this.filled = Math.random() > 0.4;
     this.pulsePhase = Math.random() * Math.PI * 2;
-    this.pulseSpeed = 0.005 + Math.random() * 0.015;
+    this.pulseSpeed = 0.004 + Math.random() * 0.012;
   }
 
-  update(canvasW, canvasH, mouseX, mouseY, time) {
+  update(canvasW, canvasH, mouseX, mouseY) {
     this.x += this.vx;
     this.y += this.vy;
     this.rotation += this.rotationSpeed;
     this.pulsePhase += this.pulseSpeed;
     this.opacity = this.baseOpacity * (0.6 + 0.4 * Math.sin(this.pulsePhase));
 
-    // Mouse interaction
+    // Smooth mouse interaction
     if (mouseX !== null && mouseY !== null) {
       const dx = this.x - mouseX;
       const dy = this.y - mouseY;
       const dist = Math.sqrt(dx * dx + dy * dy);
-      const interactionRadius = 150;
+      const interactionRadius = 120;
 
       if (dist < interactionRadius) {
-        const force = (1 - dist / interactionRadius) * 0.5;
-        this.x += dx * force * 0.02;
-        this.y += dy * force * 0.02;
-        this.opacity = Math.min(1, this.baseOpacity + force * 0.5);
+        const force = (1 - dist / interactionRadius) * 0.4;
+        this.x += dx * force * 0.015;
+        this.y += dy * force * 0.015;
+        this.opacity = Math.min(1, this.baseOpacity + force * 0.4);
       }
     }
 
@@ -142,7 +142,6 @@ export default function ParticleCanvas({
   const particlesRef = useRef([]);
   const mouseRef = useRef({ x: null, y: null });
   const rafRef = useRef(null);
-  const timeRef = useRef(0);
 
   const initParticles = useCallback((w, h) => {
     particlesRef.current = [];
@@ -157,6 +156,9 @@ export default function ParticleCanvas({
 
     const ctx = canvas.getContext('2d');
     let w, h;
+
+    // Check for reduced motion preference
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const resize = () => {
       const dpr = window.devicePixelRatio || 1;
@@ -196,7 +198,6 @@ export default function ParticleCanvas({
 
     // Animation loop
     const animate = () => {
-      timeRef.current += 1;
       ctx.clearRect(0, 0, w, h);
 
       const particles = particlesRef.current;
@@ -204,8 +205,13 @@ export default function ParticleCanvas({
       const my = mouseRef.current.y;
 
       // Update and draw particles
+      if (!prefersReducedMotion) {
+        for (let i = 0; i < particles.length; i++) {
+          particles[i].update(w, h, mx, my);
+        }
+      }
+
       for (let i = 0; i < particles.length; i++) {
-        particles[i].update(w, h, mx, my, timeRef.current);
         particles[i].draw(ctx);
       }
 

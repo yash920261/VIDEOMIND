@@ -5,6 +5,8 @@
 /* ============================================
    Landing Page
    ============================================ */
+
+/* Hero — 50/50 split: text left, particle constellation right */
 .landing-hero {
   position: relative;
   min-height: 100vh;
@@ -13,10 +15,19 @@
   overflow: hidden;
 }
 
+.landing-hero .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-60);
+  width: 100%;
+}
+
 .landing-hero-content {
   position: relative;
   z-index: 2;
-  max-width: 600px;
+  max-width: 540px;
+  flex-shrink: 0;
 }
 
 .landing-hero-eyebrow {
@@ -37,6 +48,14 @@
   gap: var(--spacing-18);
   align-items: center;
   flex-wrap: wrap;
+}
+
+/* Hero particle area — right half */
+.landing-hero-visual {
+  flex: 1;
+  min-height: 500px;
+  position: relative;
+  z-index: 1;
 }
 
 /* URL Input Bar */
@@ -97,18 +116,19 @@
   gap: var(--spacing-24);
 }
 
+/* Feature Card — No elevation, hairline border only */
 .feature-card {
   background: var(--surface-card);
   border: 1px solid var(--border-hairline);
   border-radius: var(--radius-pill);
   padding: var(--spacing-36);
-  transition: all var(--transition-normal);
+  transition: border-color var(--transition-normal), background var(--transition-normal);
+  cursor: pointer;
 }
 
 .feature-card:hover {
   border-color: var(--border-hairline-hover);
   background: var(--surface-card-hover);
-  transform: translateY(-2px);
 }
 
 .feature-card-icon {
@@ -222,6 +242,8 @@
   grid-template-columns: repeat(4, 1fr);
   gap: var(--spacing-24);
   margin-top: var(--spacing-96);
+  border-top: 1px solid var(--border-hairline);
+  padding-top: var(--spacing-60);
 }
 
 .stat-item {
@@ -244,9 +266,32 @@
 }
 
 @media (max-width: 1024px) {
+  .landing-hero .container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .landing-hero-content {
+    max-width: 100%;
+  }
+
+  .landing-hero-body {
+    max-width: 100%;
+  }
+
+  .landing-hero-actions {
+    justify-content: center;
+  }
+
+  .landing-hero-visual {
+    min-height: 300px;
+    width: 100%;
+  }
+
   .features-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: var(--spacing-36);
@@ -258,16 +303,23 @@
   .steps-grid {
     grid-template-columns: 1fr;
   }
+
   .steps-grid::before {
     display: none;
   }
+
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
   .landing-hero {
     min-height: auto;
-    padding-top: var(--spacing-120);
+    padding-top: var(--spacing-96);
     padding-bottom: var(--spacing-60);
+  }
+
+  .landing-hero-visual {
+    min-height: 200px;
   }
 }
 
@@ -344,7 +396,7 @@
   border: none;
   border-bottom: 2px solid transparent;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: color var(--transition-fast), border-color var(--transition-fast);
   text-align: center;
 }
 
@@ -363,7 +415,7 @@
 .notes-page {
   display: grid;
   grid-template-columns: 240px 1fr;
-  min-height: calc(100vh - 72px);
+  min-height: calc(100vh - 80px);
 }
 
 .notes-sidebar {

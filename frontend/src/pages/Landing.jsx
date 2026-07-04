@@ -5,7 +5,11 @@ import {
   MessageSquare, FileText, BookOpen, BrainCircuit,
   Search, GitCompare, ArrowRight, Play, Zap, Sparkles
 } from 'lucide-react';
+import ParticleCanvas from '../components/particles/ParticleCanvas';
 
+/* ============================================
+   Framer Motion Variants
+   ============================================ */
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
   visible: (i = 0) => ({
@@ -23,6 +27,36 @@ const staggerContainer = {
   },
 };
 
+const scaleIn = {
+  hidden: { opacity: 0, scale: 0.92 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
+const slideInLeft = {
+  hidden: { opacity: 0, x: -40 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
+const slideInRight = {
+  hidden: { opacity: 0, x: 40 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] },
+  },
+};
+
+/* ============================================
+   Data
+   ============================================ */
 const features = [
   {
     icon: MessageSquare,
@@ -74,6 +108,9 @@ const steps = [
   },
 ];
 
+/* ============================================
+   Component
+   ============================================ */
 export default function Landing() {
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
@@ -87,58 +124,88 @@ export default function Landing() {
 
   return (
     <div>
-      {/* Hero Section */}
+      {/* ============ Hero Section — 50/50 split ============ */}
       <section className="landing-hero">
         <div className="container">
+          {/* Left: Text block */}
           <motion.div
             className="landing-hero-content"
             initial="hidden"
             animate="visible"
             variants={staggerContainer}
           >
-            <motion.p className="text-eyebrow landing-hero-eyebrow" variants={fadeInUp}>
+            <motion.p
+              className="text-eyebrow landing-hero-eyebrow"
+              variants={fadeInUp}
+            >
               Stop Watching. Start Understanding.
             </motion.p>
 
-            <motion.h1 className="text-hero landing-hero-headline" variants={fadeInUp}>
+            <motion.h1
+              className="text-hero landing-hero-headline"
+              variants={fadeInUp}
+            >
               Unlock Video<br />Intelligence.
             </motion.h1>
 
-            <motion.p className="text-body landing-hero-body" variants={fadeInUp}>
+            <motion.p
+              className="text-body landing-hero-body"
+              variants={fadeInUp}
+            >
               Transform any YouTube video into an interactive AI knowledge base.
               Ask questions, generate notes, create quizzes — all powered by
               RAG and semantic search.
             </motion.p>
 
             <motion.div className="landing-hero-actions" variants={fadeInUp}>
-              <button
+              <motion.button
                 className="btn btn-primary btn-lg"
                 onClick={() => document.getElementById('url-input')?.focus()}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 17 }}
               >
                 <Play size={16} />
                 Get Started Free
-              </button>
-              <button
+              </motion.button>
+              <motion.button
                 className="btn btn-secondary btn-lg"
                 onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+                whileHover={{ borderColor: 'rgba(255,255,255,0.25)' }}
+                transition={{ duration: 0.2 }}
               >
                 How It Works
                 <ArrowRight size={16} />
-              </button>
+              </motion.button>
             </motion.div>
+          </motion.div>
+
+          {/* Right: Particle constellation */}
+          <motion.div
+            className="landing-hero-visual"
+            variants={slideInRight}
+            initial="hidden"
+            animate="visible"
+          >
+            <ParticleCanvas
+              particleCount={500}
+              connectionDistance={90}
+              showConnections={true}
+              className="particle-hero"
+            />
           </motion.div>
         </div>
       </section>
 
-      {/* URL Input Section */}
+      {/* ============ URL Input Section ============ */}
       <section className="url-input-section section" id="try-it">
         <div className="container">
           <motion.div
             className="url-input-container"
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-80px' }}
+            variants={scaleIn}
           >
             <h2 className="text-heading url-input-title">Try It Now</h2>
             <p className="text-body url-input-subtitle">
@@ -154,11 +221,14 @@ export default function Landing() {
                 onChange={(e) => setUrl(e.target.value)}
                 style={{ paddingRight: '140px' }}
               />
-              <button
+              <motion.button
                 type="submit"
                 className="btn btn-primary input-btn"
                 disabled={loading || !url.trim()}
-                style={{ position: 'absolute', right: '6px', top: '50%', transform: 'translateY(-50%)' }}
+                style={{ position: 'absolute', right: '6px', top: '50%', translateY: '-50%' }}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 17 }}
               >
                 {loading ? (
                   <span className="spinner" />
@@ -168,37 +238,48 @@ export default function Landing() {
                     Analyze
                   </>
                 )}
-              </button>
+              </motion.button>
             </form>
           </motion.div>
         </div>
       </section>
 
-      {/* How It Works */}
+      {/* ============ How It Works ============ */}
       <section className="how-it-works section" id="how-it-works">
         <div className="container">
           <motion.div
             className="features-header"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-80px' }}
+            variants={staggerContainer}
           >
-            <p className="text-eyebrow">Simple & Powerful</p>
-            <h2 className="text-heading">How It Works</h2>
-            <p className="text-body">Three steps from URL to AI-powered insights</p>
+            <motion.p className="text-eyebrow" variants={fadeInUp}>Simple & Powerful</motion.p>
+            <motion.h2 className="text-heading" variants={fadeInUp}>How It Works</motion.h2>
+            <motion.p className="text-body" variants={fadeInUp}>Three steps from URL to AI-powered insights</motion.p>
           </motion.div>
 
           <motion.div
             className="steps-grid"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: '-100px' }}
+            viewport={{ once: true, margin: '-80px' }}
             variants={staggerContainer}
           >
             {steps.map((step, idx) => (
-              <motion.div key={idx} className="step-item" variants={fadeInUp} custom={idx}>
-                <div className="step-number">{step.number}</div>
+              <motion.div
+                key={idx}
+                className="step-item"
+                variants={fadeInUp}
+                custom={idx}
+              >
+                <motion.div
+                  className="step-number"
+                  whileHover={{ borderColor: 'rgba(128, 82, 255, 0.4)' }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {step.number}
+                </motion.div>
                 <h3 className="step-title">{step.title}</h3>
                 <p className="step-text">{step.text}</p>
               </motion.div>
@@ -207,28 +288,28 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Features Grid */}
+      {/* ============ Features Grid ============ */}
       <section className="features-section section" id="features">
         <div className="container">
           <motion.div
             className="features-header"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-80px' }}
+            variants={staggerContainer}
           >
-            <p className="text-eyebrow">Packed with Features</p>
-            <h2 className="text-heading">Everything You Need</h2>
-            <p className="text-body">
+            <motion.p className="text-eyebrow" variants={fadeInUp}>Packed with Features</motion.p>
+            <motion.h2 className="text-heading" variants={fadeInUp}>Everything You Need</motion.h2>
+            <motion.p className="text-body" variants={fadeInUp}>
               From Q&A to quizzes, VideoMind transforms how you consume video content
-            </p>
+            </motion.p>
           </motion.div>
 
           <motion.div
             className="features-grid"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: '-100px' }}
+            viewport={{ once: true, margin: '-80px' }}
             variants={staggerContainer}
           >
             {features.map((feature, idx) => (
@@ -237,7 +318,11 @@ export default function Landing() {
                 className="feature-card"
                 variants={fadeInUp}
                 custom={idx}
-                whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                whileHover={{
+                  borderColor: 'rgba(255,255,255,0.15)',
+                  backgroundColor: 'rgba(255,255,255,0.06)',
+                }}
+                transition={{ duration: 0.3 }}
               >
                 <div className="feature-card-icon">
                   <feature.icon size={22} />
@@ -250,29 +335,39 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* ============ CTA Section ============ */}
       <section className="cta-section section">
         <div className="container">
           <motion.div
             className="cta-content"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-80px' }}
+            variants={staggerContainer}
           >
-            <p className="text-eyebrow">Ready to Transform Your Learning?</p>
-            <h2 className="text-display">
+            <motion.p className="text-eyebrow" variants={fadeInUp}>
+              Ready to Transform Your Learning?
+            </motion.p>
+            <motion.h2 className="text-display" variants={fadeInUp}>
               Your videos have the answers.<br />
               Ask VideoMind to find them.
-            </h2>
-            <p className="text-body">
+            </motion.h2>
+            <motion.p className="text-body" variants={fadeInUp}>
               Join thousands of students, developers, and researchers who use
               VideoMind AI to unlock knowledge from YouTube.
-            </p>
-            <button className="btn btn-primary btn-lg" onClick={() => navigate('/dashboard')}>
-              <Sparkles size={16} />
-              Start For Free
-            </button>
+            </motion.p>
+            <motion.div variants={fadeInUp}>
+              <motion.button
+                className="btn btn-primary btn-lg"
+                onClick={() => navigate('/dashboard')}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+              >
+                <Sparkles size={16} />
+                Start For Free
+              </motion.button>
+            </motion.div>
           </motion.div>
 
           {/* Stats */}
@@ -280,7 +375,7 @@ export default function Landing() {
             className="stats-grid"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: '-100px' }}
+            viewport={{ once: true, margin: '-60px' }}
             variants={staggerContainer}
           >
             {[
@@ -289,7 +384,12 @@ export default function Landing() {
               { value: '1000+', label: 'Videos Supported' },
               { value: '∞', label: 'Questions' },
             ].map((stat, idx) => (
-              <motion.div key={idx} className="stat-item" variants={fadeInUp} custom={idx}>
+              <motion.div
+                key={idx}
+                className="stat-item"
+                variants={fadeInUp}
+                custom={idx}
+              >
                 <div className="stat-value">{stat.value}</div>
                 <div className="stat-label">{stat.label}</div>
               </motion.div>

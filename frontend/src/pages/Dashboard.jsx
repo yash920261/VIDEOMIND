@@ -106,7 +106,12 @@ export default function Dashboard() {
             {videos.length} video{videos.length !== 1 ? 's' : ''} in your library
           </p>
         </div>
-        <div style={{ display: 'flex', gap: 'var(--spacing-12)', alignItems: 'center' }}>
+        <motion.div
+          style={{ display: 'flex', gap: 'var(--spacing-12)', alignItems: 'center' }}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+        >
           <div className="dashboard-search input-wrapper">
             <Search size={16} style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-smoke)' }} />
             <input
@@ -117,11 +122,17 @@ export default function Dashboard() {
               style={{ paddingLeft: '44px' }}
             />
           </div>
-          <button className="btn btn-primary" onClick={() => setShowModal(true)}>
+          <motion.button
+            className="btn btn-primary"
+            onClick={() => setShowModal(true)}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+          >
             <Plus size={16} />
             Add Video
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
       </motion.div>
 
       {/* Video Grid */}
@@ -136,9 +147,13 @@ export default function Dashboard() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
         >
-          <div className="empty-state-icon">
+          <motion.div
+            className="empty-state-icon"
+            animate={{ scale: [1, 1.05, 1] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+          >
             <Video size={32} />
-          </div>
+          </motion.div>
           <h2 className="empty-state-title">
             {searchQuery ? 'No videos found' : 'No videos yet'}
           </h2>
@@ -148,10 +163,16 @@ export default function Dashboard() {
               : 'Add your first YouTube video to get started with AI-powered analysis'}
           </p>
           {!searchQuery && (
-            <button className="btn btn-primary" onClick={() => setShowModal(true)}>
+            <motion.button
+              className="btn btn-primary"
+              onClick={() => setShowModal(true)}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+            >
               <Plus size={16} />
               Add Your First Video
-            </button>
+            </motion.button>
           )}
         </motion.div>
       ) : (
@@ -171,7 +192,11 @@ export default function Dashboard() {
                 variants={fadeInUp}
                 custom={idx}
                 onClick={() => video.transcriptStatus === 'completed' && navigate(`/video/${video._id}`)}
-                whileHover={{ y: -4 }}
+                whileHover={{
+                  borderColor: 'rgba(255,255,255,0.15)',
+                  backgroundColor: 'rgba(255,255,255,0.06)',
+                }}
+                transition={{ duration: 0.3 }}
               >
                 <div className="video-card-thumbnail">
                   {video.thumbnail ? (
@@ -191,14 +216,16 @@ export default function Dashboard() {
                       <h3 className="video-card-title">{video.title || 'Untitled Video'}</h3>
                       <p className="video-card-channel">{video.channel || 'Unknown Channel'}</p>
                     </div>
-                    <button
+                    <motion.button
                       className="btn-icon"
                       onClick={(e) => handleDelete(video._id, e)}
                       style={{ color: 'var(--color-smoke)', flexShrink: 0 }}
                       aria-label="Delete video"
+                      whileHover={{ color: '#ff4d6a' }}
+                      transition={{ duration: 0.2 }}
                     >
                       <Trash2 size={16} />
-                    </button>
+                    </motion.button>
                   </div>
                   <div style={{ marginTop: '12px' }}>
                     <span className={`badge ${status.className}`}>
@@ -221,21 +248,28 @@ export default function Dashboard() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
             onClick={() => setShowModal(false)}
           >
             <motion.div
               className="modal"
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              initial={{ opacity: 0, scale: 0.92, y: 30 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              exit={{ opacity: 0, scale: 0.92, y: 30 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
               onClick={(e) => e.stopPropagation()}
             >
               <div className="modal-header">
                 <h2 className="text-heading-sm">Add Video</h2>
-                <button className="btn-icon" onClick={() => setShowModal(false)} aria-label="Close">
+                <motion.button
+                  className="btn-icon"
+                  onClick={() => setShowModal(false)}
+                  aria-label="Close"
+                  whileHover={{ backgroundColor: 'rgba(255,255,255,0.06)' }}
+                  transition={{ duration: 0.2 }}
+                >
                   <X size={20} />
-                </button>
+                </motion.button>
               </div>
 
               <form onSubmit={handleAddVideo}>
@@ -263,7 +297,14 @@ export default function Dashboard() {
                   <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>
                     Cancel
                   </button>
-                  <button type="submit" className="btn btn-primary" disabled={submitting || !url.trim()}>
+                  <motion.button
+                    type="submit"
+                    className="btn btn-primary"
+                    disabled={submitting || !url.trim()}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+                  >
                     {submitting ? (
                       <>
                         <span className="spinner" style={{ width: '14px', height: '14px' }} />
@@ -275,7 +316,7 @@ export default function Dashboard() {
                         Analyze Video
                       </>
                     )}
-                  </button>
+                  </motion.button>
                 </div>
               </form>
             </motion.div>
