@@ -7,9 +7,7 @@ export default function Layout() {
   return (
     <div className="page-layout">
       <ParticleCanvas
-        particleCount={600}
-        connectionDistance={80}
-        showConnections={true}
+        particleCount={280}
       />
       <Navbar />
       <main className="page-content">

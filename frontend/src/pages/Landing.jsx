@@ -5,7 +5,6 @@ import {
   MessageSquare, FileText, BookOpen, BrainCircuit,
   Search, GitCompare, ArrowRight, Play, Zap, Sparkles
 } from 'lucide-react';
-import ParticleCanvas from '../components/particles/ParticleCanvas';
 
 /* ============================================
    Framer Motion Variants
@@ -180,20 +179,7 @@ export default function Landing() {
             </motion.div>
           </motion.div>
 
-          {/* Right: Particle constellation */}
-          <motion.div
-            className="landing-hero-visual"
-            variants={slideInRight}
-            initial="hidden"
-            animate="visible"
-          >
-            <ParticleCanvas
-              particleCount={500}
-              connectionDistance={90}
-              showConnections={true}
-              className="particle-hero"
-            />
-          </motion.div>
+
         </div>
       </section>
 
