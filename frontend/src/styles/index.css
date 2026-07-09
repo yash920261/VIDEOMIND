@@ -204,7 +204,7 @@ img, video {
    ============================================ */
 .text-hero {
   font-size: var(--text-hero);
-  font-weight: var(--fw-extralight);
+  font-weight: var(--fw-light);
   line-height: var(--leading-hero);
   letter-spacing: var(--tracking-hero);
   color: var(--color-bone);

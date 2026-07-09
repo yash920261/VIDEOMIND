@@ -1,13 +1,13 @@
 import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
-import ParticleCanvas from '../particles/ParticleCanvas';
+import Antigravity from '../particles/Antigravity';
 
 export default function Layout() {
   return (
     <div className="page-layout">
-      <ParticleCanvas
-        particleCount={280}
+      <Antigravity
+        count={280}
       />
       <Navbar />
       <main className="page-content">
