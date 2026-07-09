@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import Antigravity from '../components/particles/Antigravity';
 import {
   MessageSquare, FileText, BookOpen, BrainCircuit,
   Search, GitCompare, ArrowRight, Play, Zap, Sparkles
@@ -125,6 +126,7 @@ export default function Landing() {
     <div>
       {/* ============ Hero Section — 50/50 split ============ */}
       <section className="landing-hero">
+        <Antigravity count={180} />
         <div className="container">
           {/* Left: Text block */}
           <motion.div
@@ -306,7 +308,7 @@ export default function Landing() {
                 custom={idx}
                 whileHover={{
                   borderColor: 'rgba(255,255,255,0.15)',
-                  backgroundColor: 'rgba(255,255,255,0.06)',
+                  backgroundColor: '#161616',
                 }}
                 transition={{ duration: 0.3 }}
               >

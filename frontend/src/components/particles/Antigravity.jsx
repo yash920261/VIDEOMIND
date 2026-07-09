@@ -12,7 +12,7 @@ const DESIGN_COLORS = [
 ];
 
 const AntigravityInner = ({
-  count = 280,
+  count = 180,
   magnetRadius = 8, // Decreased to pull in fewer particles and decrease density around cursor
   ringRadius = 5,
   waveSpeed = 0.4,
@@ -46,9 +46,26 @@ const AntigravityInner = ({
       // Map mouse pixels to normalized device coordinates [-1, 1] matching state.pointer
       ndcMouse.current.x = (e.clientX / window.innerWidth) * 2 - 1;
       ndcMouse.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
-
+      
       lastMouseMoveTime.current = Date.now();
-      mouseActiveRef.current = true;
+
+      // Check if mouse is physically inside the landing hero section bounds
+      const heroElement = document.querySelector('.landing-hero');
+      if (heroElement && window.location.pathname === '/') {
+        const rect = heroElement.getBoundingClientRect();
+        if (
+          e.clientX >= rect.left &&
+          e.clientX <= rect.right &&
+          e.clientY >= rect.top &&
+          e.clientY <= rect.bottom
+        ) {
+          mouseActiveRef.current = true;
+        } else {
+          mouseActiveRef.current = false;
+        }
+      } else {
+        mouseActiveRef.current = false;
+      }
     };
 
     const handleMouseLeave = () => {
@@ -57,7 +74,7 @@ const AntigravityInner = ({
 
     window.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseleave', handleMouseLeave);
-
+    
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseleave', handleMouseLeave);

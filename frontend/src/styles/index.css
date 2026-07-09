@@ -26,9 +26,9 @@
 
   /* Surfaces — depth comes from the void, not from stacked layers */
   --surface-void: #000000;
-  --surface-card: rgba(255, 255, 255, 0.03);
-  --surface-card-hover: rgba(255, 255, 255, 0.06);
-  --surface-input: rgba(255, 255, 255, 0.05);
+  --surface-card: #0d0d0d;
+  --surface-card-hover: #161616;
+  --surface-input: #0a0a0a;
   --surface-overlay: rgba(0, 0, 0, 0.85);
 
   /* Borders — hairline only */

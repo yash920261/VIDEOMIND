@@ -21,6 +21,7 @@
   justify-content: space-between;
   gap: var(--spacing-60);
   width: 100%;
+  margin-top: -80px; /* Reduces space between fixed navbar header and hero content */
 }
 
 .landing-hero-content {
@@ -269,6 +270,7 @@
   .landing-hero .container {
     flex-direction: column;
     text-align: center;
+    margin-top: 0; /* Reset margin shift on mobile/tablet */
   }
 
   .landing-hero-content {

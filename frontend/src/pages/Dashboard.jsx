@@ -194,7 +194,7 @@ export default function Dashboard() {
                 onClick={() => video.transcriptStatus === 'completed' && navigate(`/video/${video._id}`)}
                 whileHover={{
                   borderColor: 'rgba(255,255,255,0.15)',
-                  backgroundColor: 'rgba(255,255,255,0.06)',
+                  backgroundColor: '#161616',
                 }}
                 transition={{ duration: 0.3 }}
               >

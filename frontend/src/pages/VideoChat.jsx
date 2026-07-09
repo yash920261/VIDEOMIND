@@ -661,7 +661,7 @@ function QuizView({ quiz, videoTitle }) {
                 onClick={() => handleSelect(idx)}
                 whileHover={{
                   borderColor: 'rgba(255,255,255,0.15)',
-                  backgroundColor: 'rgba(255,255,255,0.03)',
+                  backgroundColor: '#1a1a1a',
                 }}
                 transition={{ duration: 0.2 }}
               >
