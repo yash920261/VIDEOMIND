@@ -9,25 +9,28 @@ const { YoutubeTranscript } = require('youtube-transcript');
 
 /**
  * Fetch transcript using YouTube's InnerTube API
- * This mimics the Android YouTube client to avoid cloud IP blocks
+ * Uses the WEB client context with the public API key
  */
 async function fetchTranscriptViaInnertube(videoId) {
-  // Step 1: Get video page to extract caption tracks
+  // YouTube's public InnerTube API key (embedded in the web client, not secret)
+  const INNERTUBE_API_KEY = 'AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8';
+
   const playerResponse = await fetch(
-    `https://www.youtube.com/youtubei/v1/player`,
+    `https://www.youtube.com/youtubei/v1/player?key=${INNERTUBE_API_KEY}`,
     {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'User-Agent': 'com.google.android.youtube/19.02.39 (Linux; U; Android 14) gzip',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+        'Origin': 'https://www.youtube.com',
+        'Referer': 'https://www.youtube.com/',
       },
       body: JSON.stringify({
         videoId,
         context: {
           client: {
-            clientName: 'ANDROID',
-            clientVersion: '19.02.39',
-            androidSdkVersion: 34,
+            clientName: 'WEB',
+            clientVersion: '2.20240620.00.00',
             hl: 'en',
             gl: 'US',
           },
@@ -41,8 +44,43 @@ async function fetchTranscriptViaInnertube(videoId) {
   }
 
   const playerData = await playerResponse.json();
+  return extractCaptionsFromPlayerData(playerData);
+}
 
-  // Extract caption tracks
+/**
+ * Fallback: Scrape the watch page to extract the embedded player response
+ */
+async function fetchTranscriptViaWatchPage(videoId) {
+  const watchResponse = await fetch(
+    `https://www.youtube.com/watch?v=${videoId}`,
+    {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+        'Accept-Language': 'en-US,en;q=0.9',
+      },
+    }
+  );
+
+  if (!watchResponse.ok) {
+    throw new Error(`Watch page request failed: ${watchResponse.status}`);
+  }
+
+  const html = await watchResponse.text();
+
+  // Extract ytInitialPlayerResponse from the page
+  const match = html.match(/var ytInitialPlayerResponse\s*=\s*(\{.+?\});/s);
+  if (!match) {
+    throw new Error('Could not extract player response from watch page');
+  }
+
+  const playerData = JSON.parse(match[1]);
+  return extractCaptionsFromPlayerData(playerData);
+}
+
+/**
+ * Extract caption segments from a player response object
+ */
+async function extractCaptionsFromPlayerData(playerData) {
   const captions = playerData?.captions?.playerCaptionsTracklistRenderer?.captionTracks;
   if (!captions || captions.length === 0) {
     throw new Error('No captions available for this video');
@@ -54,12 +92,11 @@ async function fetchTranscriptViaInnertube(videoId) {
     captions.find(t => t.languageCode?.startsWith('en')) ||
     captions[0];
 
-  // Step 2: Fetch the actual transcript using the caption track URL
-  // Append fmt=json3 to get JSON format
+  // Fetch the actual transcript in JSON format
   const captionUrl = `${track.baseUrl}&fmt=json3`;
   const captionResponse = await fetch(captionUrl, {
     headers: {
-      'User-Agent': 'com.google.android.youtube/19.02.39 (Linux; U; Android 14) gzip',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
     },
   });
 
@@ -88,11 +125,12 @@ async function fetchTranscriptViaInnertube(videoId) {
 
 /**
  * Main transcript fetcher with fallback chain:
- * 1. InnerTube API (works from cloud IPs)
- * 2. youtube-transcript library (web scraping fallback)
+ * 1. InnerTube API (most reliable from cloud IPs)
+ * 2. Watch page scrape (extracts embedded player response)
+ * 3. youtube-transcript library (original web scraping)
  */
 async function fetchTranscript(videoId) {
-  // Try InnerTube first (most reliable from cloud servers)
+  // Try InnerTube API first
   try {
     console.log(`  → Trying InnerTube API...`);
     const segments = await fetchTranscriptViaInnertube(videoId);
@@ -102,6 +140,18 @@ async function fetchTranscript(videoId) {
     }
   } catch (innertubeError) {
     console.warn(`  ⚠️ InnerTube failed: ${innertubeError.message}`);
+  }
+
+  // Try watch page scrape
+  try {
+    console.log(`  → Trying watch page scrape...`);
+    const segments = await fetchTranscriptViaWatchPage(videoId);
+    if (segments && segments.length > 0) {
+      console.log(`  ✅ Watch page: Got ${segments.length} segments`);
+      return segments;
+    }
+  } catch (watchError) {
+    console.warn(`  ⚠️ Watch page failed: ${watchError.message}`);
   }
 
   // Fallback to youtube-transcript library
@@ -124,8 +174,7 @@ async function fetchTranscript(videoId) {
   } catch (fallbackError) {
     console.error(`  ❌ All methods failed. Last error: ${fallbackError.message}`);
     throw new Error(
-      `Failed to extract transcript. This video may not have captions available. ` +
-      `(InnerTube and web scraping both failed)`
+      `Failed to extract transcript. This video may not have captions available.`
     );
   }
 }
@@ -135,3 +184,4 @@ function mergeTranscriptSegments(segments) {
 }
 
 module.exports = { fetchTranscript, mergeTranscriptSegments };
+
