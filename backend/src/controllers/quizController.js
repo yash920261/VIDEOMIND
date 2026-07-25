@@ -7,7 +7,7 @@ const { generateQuiz } = require('../services/aiService');
  */
 exports.getQuiz = async (req, res, next) => {
   try {
-    const video = await Video.findById(req.params.id);
+    const video = await Video.findOne({ _id: req.params.id, user: req.user._id });
     if (!video) {
       return res.status(404).json({ message: 'Video not found' });
     }

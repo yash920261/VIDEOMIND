@@ -525,3 +525,102 @@
   justify-content: space-between;
   margin-top: var(--spacing-30);
 }
+
+/* ============================================
+   Auth Pages (Login & Sign-Up)
+   ============================================ */
+.auth-page {
+  min-height: calc(100vh - 120px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-60) var(--spacing-24);
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  background: var(--surface-card);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-pill); /* 24px */
+  padding: var(--spacing-36);
+  position: relative;
+  z-index: 1;
+  transition: border-color var(--transition-normal);
+}
+
+.auth-card:hover {
+  border-color: var(--border-hairline-hover);
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: var(--spacing-30);
+}
+
+.auth-title {
+  margin-top: var(--spacing-8);
+  font-size: var(--text-heading-sm);
+  font-weight: var(--fw-light);
+  letter-spacing: var(--tracking-heading-sm);
+}
+
+.auth-subtitle {
+  color: var(--color-smoke);
+  font-size: var(--text-body-sm);
+  margin-top: var(--spacing-6);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-18);
+}
+
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
+.auth-label {
+  font-size: var(--text-caption);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-ash);
+  padding-left: var(--spacing-12);
+}
+
+.auth-error {
+  color: var(--color-error);
+  font-size: var(--text-caption);
+  padding: var(--spacing-8) var(--spacing-12);
+  background: rgba(255, 77, 106, 0.05);
+  border: 1px solid rgba(255, 77, 106, 0.15);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-12);
+  text-align: center;
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: var(--spacing-24);
+  font-size: var(--text-body-sm);
+  color: var(--color-smoke);
+}
+
+.auth-footer-link {
+  color: var(--color-plum-voltage);
+  font-weight: var(--fw-semibold);
+  transition: color var(--transition-fast);
+  margin-left: 4px;
+}
+
+.auth-footer-link:hover {
+  color: var(--color-plum-voltage-hover);
+  text-decoration: underline;
+}
+

@@ -2,11 +2,19 @@ const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 async function request(endpoint, options = {}) {
   const url = `${API_BASE}${endpoint}`;
+  const token = localStorage.getItem('token');
+
+  const headers = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+  };
+
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
   const config = {
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
+    headers,
     ...options,
   };
 
@@ -71,4 +79,7 @@ export const authAPI = {
       method: 'POST',
       body: JSON.stringify(data),
     }),
+
+  getMe: () => request('/auth/me'),
 };
+

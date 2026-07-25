@@ -13,7 +13,7 @@ exports.askQuestion = async (req, res, next) => {
       return res.status(400).json({ message: 'videoId and question are required' });
     }
 
-    const video = await Video.findById(videoId);
+    const video = await Video.findOne({ _id: videoId, user: req.user._id });
     if (!video) {
       return res.status(404).json({ message: 'Video not found' });
     }
@@ -51,6 +51,11 @@ exports.askQuestion = async (req, res, next) => {
  */
 exports.getChatHistory = async (req, res, next) => {
   try {
+    const video = await Video.findOne({ _id: req.params.videoId, user: req.user._id });
+    if (!video) {
+      return res.status(404).json({ message: 'Video not found' });
+    }
+
     const chats = await Chat.find({ videoId: req.params.videoId })
       .sort({ createdAt: 1 })
       .lean();

@@ -23,7 +23,7 @@ exports.addVideo = async (req, res, next) => {
     }
 
     // Check if video already exists
-    let video = await Video.findOne({ videoId });
+    let video = await Video.findOne({ user: req.user._id, videoId });
     if (video) {
       return res.json({ video, message: 'Video already processed' });
     }
@@ -33,6 +33,7 @@ exports.addVideo = async (req, res, next) => {
 
     // Create video record
     video = await Video.create({
+      user: req.user._id,
       videoId,
       title: metadata.title,
       channel: metadata.channel,
@@ -58,21 +59,21 @@ exports.addVideo = async (req, res, next) => {
 async function processVideo(video) {
   try {
     // Step 1: Extract transcript
-    console.log(`📝 Extracting transcript for: ${video.title}`);
+    console.log(`Extracting transcript for: ${video.title}`);
     const segments = await fetchTranscript(video.videoId);
 
     // Step 2: Chunk transcript
-    console.log(`✂️ Chunking transcript into segments...`);
+    console.log(`Chunking transcript into segments...`);
     const chunks = chunkTranscript(segments);
     console.log(`   Created ${chunks.length} chunks`);
 
     // Step 3: Generate embeddings
-    console.log(`🧠 Generating embeddings...`);
+    console.log(`Generating embeddings...`);
     const chunkTexts = chunks.map(c => c.text);
     const embeddings = await generateEmbeddings(chunkTexts);
 
     // Step 4: Store chunks with embeddings
-    console.log(`💾 Storing chunks in database...`);
+    console.log(`Storing chunks in database...`);
     const chunkDocs = chunks.map((chunk, i) => ({
       videoId: video._id,
       text: chunk.text,
@@ -103,7 +104,7 @@ async function processVideo(video) {
  */
 exports.getVideos = async (req, res, next) => {
   try {
-    const videos = await Video.find()
+    const videos = await Video.find({ user: req.user._id })
       .sort({ createdAt: -1 })
       .select('-summary -notes -quiz')
       .lean();
@@ -119,7 +120,7 @@ exports.getVideos = async (req, res, next) => {
  */
 exports.getVideo = async (req, res, next) => {
   try {
-    const video = await Video.findById(req.params.id).lean();
+    const video = await Video.findOne({ _id: req.params.id, user: req.user._id }).lean();
     if (!video) {
       return res.status(404).json({ message: 'Video not found' });
     }
@@ -134,7 +135,7 @@ exports.getVideo = async (req, res, next) => {
  */
 exports.deleteVideo = async (req, res, next) => {
   try {
-    const video = await Video.findById(req.params.id);
+    const video = await Video.findOne({ _id: req.params.id, user: req.user._id });
     if (!video) {
       return res.status(404).json({ message: 'Video not found' });
     }

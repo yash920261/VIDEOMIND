@@ -73,41 +73,40 @@ TRANSCRIPT:
 ${fullTranscript.substring(0, 15000)}
 
 Generate three formats:
-
-1. SHORT SUMMARY (100 words max): A concise overview of the video's main topic and key takeaway.
-
-2. DETAILED SUMMARY (500 words max): A thorough summary covering all major points discussed in the video.
-
-3. BULLET POINTS (10 items): The 10 most important points from the video as bullet points.
-
-Respond in this exact JSON format:
-{
-  "short": "...",
-  "detailed": "...",
-  "bullets": ["point 1", "point 2", ...]
-}`;
-
-  const result = await ai.models.generateContent({
-    model: DEFAULT_MODEL,
-    contents: prompt
-  });
-  const text = result.text;
+1. SHORT SUMMARY: A concise overview of the video's main topic and key takeaway (100 words max).
+2. DETAILED SUMMARY: A thorough summary covering all major points discussed in the video (500 words max).
+3. BULLET POINTS: The 10 most important points from the video as bullet points.`;
 
   try {
-    // Extract JSON from the response
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
-      return JSON.parse(jsonMatch[0]);
-    }
-  } catch (e) {
-    console.error('Failed to parse summary JSON:', e);
-  }
+    const result = await ai.models.generateContent({
+      model: DEFAULT_MODEL,
+      contents: prompt,
+      config: {
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: 'OBJECT',
+          properties: {
+            short: { type: 'STRING' },
+            detailed: { type: 'STRING' },
+            bullets: {
+              type: 'ARRAY',
+              items: { type: 'STRING' }
+            }
+          },
+          required: ['short', 'detailed', 'bullets']
+        }
+      }
+    });
 
-  return {
-    short: text.substring(0, 500),
-    detailed: text,
-    bullets: [],
-  };
+    return JSON.parse(result.text);
+  } catch (error) {
+    console.error('Error generating summary:', error);
+    return {
+      short: 'Error generating summary.',
+      detailed: 'Error generating summary. Please try again.',
+      bullets: []
+    };
+  }
 }
 
 /**
@@ -143,45 +142,45 @@ Make the notes comprehensive enough to study from without watching the video.`;
  * Generate quiz (MCQs)
  */
 async function generateQuiz(fullTranscript, videoTitle) {
-  const prompt = `You are a quiz generator. Create 10 multiple-choice questions from this video transcript.
+  const prompt = `You are a quiz generator. Create exactly 10 multiple-choice questions from this video transcript.
 
 VIDEO TITLE: ${videoTitle}
 
 TRANSCRIPT:
 ${fullTranscript.substring(0, 15000)}
 
-Generate exactly 10 MCQs that test understanding of the video content.
-Each question should have exactly 4 options (A, B, C, D).
-Include a mix of difficulty levels.
-
-Respond in this exact JSON format:
-[
-  {
-    "question": "What is...",
-    "options": ["Option A", "Option B", "Option C", "Option D"],
-    "correctAnswer": 0,
-    "explanation": "Brief explanation of why this is correct"
-  }
-]
-
-Where correctAnswer is the 0-based index of the correct option.`;
-
-  const result = await ai.models.generateContent({
-    model: DEFAULT_MODEL,
-    contents: prompt
-  });
-  const text = result.text;
+Generate 10 MCQs that test understanding of the video content. Each question must have exactly 4 options.`;
 
   try {
-    const jsonMatch = text.match(/\[[\s\S]*\]/);
-    if (jsonMatch) {
-      return JSON.parse(jsonMatch[0]);
-    }
-  } catch (e) {
-    console.error('Failed to parse quiz JSON:', e);
-  }
+    const result = await ai.models.generateContent({
+      model: DEFAULT_MODEL,
+      contents: prompt,
+      config: {
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: 'ARRAY',
+          items: {
+            type: 'OBJECT',
+            properties: {
+              question: { type: 'STRING' },
+              options: {
+                type: 'ARRAY',
+                items: { type: 'STRING' }
+              },
+              correctAnswer: { type: 'INTEGER', description: '0-based index of the correct option' },
+              explanation: { type: 'STRING' }
+            },
+            required: ['question', 'options', 'correctAnswer', 'explanation']
+          }
+        }
+      }
+    });
 
-  return [];
+    return JSON.parse(result.text);
+  } catch (error) {
+    console.error('Failed to generate quiz:', error);
+    return [];
+  }
 }
 
 module.exports = { answerQuestion, generateSummary, generateNotes, generateQuiz };

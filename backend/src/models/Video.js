@@ -1,10 +1,15 @@
 const mongoose = require('mongoose');
 
 const videoSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+    index: true,
+  },
   videoId: {
     type: String,
     required: true,
-    unique: true,
     index: true,
   },
   title: {
@@ -46,5 +51,8 @@ const videoSchema = new mongoose.Schema({
 }, {
   timestamps: true,
 });
+
+// Compound unique index so a user cannot add duplicate videos, but different users can add the same video.
+videoSchema.index({ user: 1, videoId: 1 }, { unique: true });
 
 module.exports = mongoose.model('Video', videoSchema);
