@@ -33,11 +33,10 @@ async function fetchTranscriptViaInnertube(videoId) {
         videoId,
         context: {
           client: {
-            clientName: 'WEB',
-            clientVersion: '2.20241126.01.00',
-            hl: 'en',
-            gl: 'US',
-            userAgent: BROWSER_UA,
+            clientName: "ANDROID",
+            clientVersion: "19.09.37",
+            hl: "en",
+            gl: "US"
           },
         },
         params: 'CgIQBg==', // Request captions
@@ -50,6 +49,15 @@ async function fetchTranscriptViaInnertube(videoId) {
   }
 
   const playerData = await playerResponse.json();
+
+  console.log("Playability:");
+  console.log(playerData.playabilityStatus);
+
+  console.log("Captions:");
+  console.log(playerData.captions);
+
+  console.log("Video details:");
+  console.log(playerData.videoDetails?.title);
 
   // Check for playability errors
   if (playerData?.playabilityStatus?.status === 'ERROR') {
