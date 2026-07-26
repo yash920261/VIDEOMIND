@@ -33,10 +33,10 @@ async function fetchTranscriptViaInnertube(videoId) {
         videoId,
         context: {
           client: {
-            clientName: "ANDROID",
-            clientVersion: "19.09.37",
+            clientName: "WEB",
+            clientVersion: "2.20250721.00.00",
             hl: "en",
-            gl: "US"
+            gl: "US",
           },
         },
       }),
@@ -55,14 +55,12 @@ async function fetchTranscriptViaInnertube(videoId) {
 
   const playerData = await playerResponse.json();
 
-  console.log("Playability:");
-  console.log(playerData.playabilityStatus);
-
-  console.log("Captions:");
-  console.log(playerData.captions);
-
-  console.log("Video details:");
-  console.log(playerData.videoDetails?.title);
+  console.log("========== PLAYER DATA ==========");
+  console.log("Playability:", playerData.playabilityStatus);
+  console.log("Captions:", JSON.stringify(playerData.captions, null, 2));
+  console.log("Video Details:", playerData.videoDetails?.title);
+  console.log("Streaming:", !!playerData.streamingData);
+  console.log("=================================");
 
   // Check for playability errors
   if (playerData?.playabilityStatus?.status === 'ERROR') {
@@ -93,6 +91,7 @@ async function fetchTranscriptViaWatchPage(videoId) {
   }
 
   const html = await watchResponse.text();
+  console.log(html.substring(0, 1500));
 
   // Try multiple patterns to extract the player response
   const patterns = [
