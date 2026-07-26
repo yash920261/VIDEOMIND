@@ -39,10 +39,15 @@ async function fetchTranscriptViaInnertube(videoId) {
             gl: "US"
           },
         },
-        params: 'CgIQBg==', // Request captions
       }),
     }
   );
+
+  const responseText = await playerResponse.text();
+
+  console.log("Status:", playerResponse.status);
+  console.log(responseText);
+
 
   if (!playerResponse.ok) {
     throw new Error(`InnerTube player request failed: ${playerResponse.status}`);
