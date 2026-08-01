@@ -33,6 +33,7 @@ app.use('/api', routes);
 
 // Health check
 app.get('/health', (req, res) => {
+  console.log("Health route hit!!!");
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
